@@ -1,4 +1,4 @@
-<? if current_file or mentioned_files or selections then ?>
+<? if current_file or mentioned_files or selections or linter_errors then ?>
   <additional-data>
     Below is context that may help answer the user query. Ignore if not relevant
     <? if current_file then ?>
@@ -6,7 +6,7 @@
         Path: <%= current_file.path %>
       </current-file>
     <? end ?>
-    <? if selections or mentioned_files then ?>
+    <? if selections or mentioned_files or linter_errors then ?>
       <attached-files>
         <? if selections then ?>
           <? for x, selection in ipairs(selections) do ?>
@@ -29,6 +29,11 @@
               Path: <%= path %>
             </mentioned-file>
           <? end ?>
+        <? end ?>
+        <? if linter_errors then ?>
+          <linter-errors>
+            <%= linter_errors %>
+          </linter-errors>
         <? end ?>
       </attached-files>
     <? end ?>
