@@ -2,72 +2,20 @@ local api = require("goose.api")
 
 local M = {}
 
+-- Binds a keymap config with its api fn
+-- Name of api fn & keymap global config should always be the same
 function M.setup(keymap)
   local cmds = api.commands
   local global = keymap.global
 
-  vim.keymap.set({ 'n', 'v' }, global.open_input, function()
-    api.open_input()
-  end, { silent = false, desc = cmds.open_input.desc })
-
-  vim.keymap.set({ 'n', 'v' }, global.open_input_new_session, function()
-    api.open_input_new_session()
-  end, { silent = false, desc = cmds.open_input_new_session.desc })
-
-  vim.keymap.set({ 'n', 'v' }, global.open_output, function()
-    api.open_output()
-  end, { silent = false, desc = cmds.open_output.desc })
-
-  vim.keymap.set({ 'n', 'v' }, global.close, function()
-    api.close()
-  end, { silent = false, desc = cmds.close.desc })
-
-  vim.keymap.set({ 'n', 'v' }, global.toggle_fullscreen, function()
-    api.toggle_fullscreen()
-  end, { silent = false, desc = cmds.toggle_fullscreen.desc })
-
-  vim.keymap.set({ 'n', 'v' }, global.select_session, function()
-    api.select_session()
-  end, { silent = false, desc = cmds.select_session.desc })
-
-  vim.keymap.set({ 'n', 'v' }, global.toggle, function()
-    api.toggle()
-  end, { silent = false, desc = cmds.toggle.desc })
-
-  vim.keymap.set({ 'n', 'v' }, global.toggle_focus, function()
-    api.toggle_focus()
-  end, { silent = false, desc = cmds.toggle_focus.desc })
-
-  vim.keymap.set({ 'n', 'v' }, global.diff.open, function()
-    api.diff()
-  end, { silent = false, desc = cmds.diff.desc })
-
-  vim.keymap.set({ 'n', 'v' }, global.diff.next, function()
-    api.next_diff()
-  end, { silent = false, desc = cmds.next_diff.desc })
-
-  vim.keymap.set({ 'n', 'v' }, global.diff.prev, function()
-    api.prev_diff()
-  end, { silent = false, desc = cmds.prev_diff.desc })
-
-  vim.keymap.set({ 'n', 'v' }, global.diff.close, function()
-    api.close_diff()
-  end, { silent = false, desc = cmds.close_diff.desc })
-
-  vim.keymap.set({ 'n', 'v' }, global.diff.revert_all, function()
-    api.revert_all()
-  end, { silent = false, desc = cmds.revert_all.desc })
-
-  vim.keymap.set({ 'n', 'v' }, global.diff.revert_this, function()
-    api.revert_this()
-  end, { silent = false, desc = cmds.revert_this.desc })
-
-  vim.keymap.set('n', global.goose_mode_chat, function() api.set_chat_mode() end, { desc = cmds.chat_mode.desc })
-
-  vim.keymap.set('n', global.goose_mode_auto, function() api.set_auto_mode() end, { desc = cmds.auto_mode.desc })
-
-  vim.keymap.set('n', global.configure_provider, function() api.configure_provider() end,
-    { desc = cmds.configure_provider.desc })
+  for key, mapping in pairs(global) do
+    vim.keymap.set(
+      { 'n', 'v' },
+      mapping,
+      function() api[key]() end,
+      { silent = false, desc = cmds[key] and cmds[key].desc }
+    )
+  end
 end
 
 return M

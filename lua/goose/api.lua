@@ -56,11 +56,11 @@ function M.change_mode(mode)
   end
 end
 
-function M.set_chat_mode()
+function M.goose_mode_chat()
   M.change_mode(require('goose.info').GOOSE_MODE.CHAT)
 end
 
-function M.set_auto_mode()
+function M.goose_mode_auto()
   M.change_mode(require('goose.info').GOOSE_MODE.AUTO)
 end
 
@@ -109,32 +109,32 @@ function M.toggle_pane()
   ui.toggle_pane()
 end
 
-function M.diff()
+function M.diff_open()
   review.review()
 end
 
-function M.next_diff()
+function M.diff_next()
   review.next_diff()
 end
 
-function M.prev_diff()
+function M.diff_prev()
   review.prev_diff()
 end
 
-function M.close_diff()
+function M.diff_close()
   review.close_diff()
+end
+
+function M.diff_revert_all()
+  review.revert_all()
+end
+
+function M.diff_revert_this()
+  review.revert_current()
 end
 
 function M.set_review_breakpoint()
   review.set_breakpoint()
-end
-
-function M.revert_all()
-  review.revert_all()
-end
-
-function M.revert_this()
-  review.revert_current()
 end
 
 function M.prev_history()
@@ -233,19 +233,19 @@ M.commands = {
     end
   },
 
-  chat_mode = {
+  goose_mode_chat = {
     name = "GooseModeChat",
     desc = "Set goose mode to `chat`. (Tool calling disabled. No editor context besides selections)",
     fn = function()
-      M.set_chat_mode()
+      M.goose_mode_chat()
     end
   },
 
-  auto_mode = {
+  goose_mode_auto = {
     name = "GooseModeAuto",
     desc = "Set goose mode to `auto`. (Default mode with full agent capabilities)",
     fn = function()
-      M.set_auto_mode()
+      M.goose_mode_auto()
     end
   },
 
@@ -273,35 +273,52 @@ M.commands = {
     end
   },
 
-  diff = {
+  -- Updated diff command names
+  diff_open = {
     name = "GooseDiff",
     desc = "Opens a diff tab of a modified file since the last goose prompt",
     fn = function()
-      M.diff()
+      M.diff_open()
     end
   },
 
-  next_diff = {
+  diff_next = {
     name = "GooseDiffNext",
     desc = "Navigate to next file diff",
     fn = function()
-      M.next_diff()
+      M.diff_next()
     end
   },
 
-  prev_diff = {
+  diff_prev = {
     name = "GooseDiffPrev",
     desc = "Navigate to previous file diff",
     fn = function()
-      M.prev_diff()
+      M.diff_prev()
     end
   },
 
-  close_diff = {
+  diff_close = {
     name = "GooseDiffClose",
     desc = "Close diff view tab and return to normal editing",
     fn = function()
-      M.close_diff()
+      M.diff_close()
+    end
+  },
+
+  diff_revert_all = {
+    name = "GooseRevertAll",
+    desc = "Revert all file changes since the last goose prompt",
+    fn = function()
+      M.diff_revert_all()
+    end
+  },
+
+  diff_revert_this = {
+    name = "GooseRevertThis",
+    desc = "Revert current file changes since the last goose prompt",
+    fn = function()
+      M.diff_revert_this()
     end
   },
 
@@ -310,22 +327,6 @@ M.commands = {
     desc = "Set a review breakpoint to track changes",
     fn = function()
       M.set_review_breakpoint()
-    end
-  },
-
-  revert_all = {
-    name = "GooseRevertAll",
-    desc = "Revert all file changes since the last goose prompt",
-    fn = function()
-      M.revert_all()
-    end
-  },
-
-  revert_this = {
-    name = "GooseRevertThis",
-    desc = "Revert current file changes since the last goose prompt",
-    fn = function()
-      M.revert_this()
     end
   },
 }

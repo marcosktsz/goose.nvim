@@ -4,6 +4,7 @@ local M = {}
 
 -- Default configuration
 M.defaults = {
+  default_global_keymaps = true,
   keymap = {
     global = {
       toggle = '<leader>gg',
@@ -17,15 +18,12 @@ M.defaults = {
       goose_mode_chat = '<leader>gmc',
       goose_mode_auto = '<leader>gma',
       configure_provider = '<leader>gp',
-
-      diff = {
-        open = '<leader>gd',
-        next = '<leader>g]',
-        prev = '<leader>g[',
-        close = '<leader>gc',
-        revert_all = '<leader>gra',
-        revert_this = '<leader>grt'
-      }
+      diff_open = '<leader>gd',
+      diff_next = '<leader>g]',
+      diff_prev = '<leader>g[',
+      diff_close = '<leader>gc',
+      diff_revert_all = '<leader>gra',
+      diff_revert_this = '<leader>grt'
     },
     window = {
       submit = '<cr>',
@@ -69,6 +67,10 @@ M.values = vim.deepcopy(M.defaults)
 
 function M.setup(opts)
   opts = opts or {}
+
+  if opts.default_global_keymaps == false then
+    M.values.keymap.global = {}
+  end
 
   -- Merge user options with defaults (deep merge for nested tables)
   for k, v in pairs(opts) do
