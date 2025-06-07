@@ -133,6 +133,10 @@ function M.diff_revert_this()
   review.revert_current()
 end
 
+function M.diff_revert_line()
+  review.revert_line()
+end
+
 function M.set_review_breakpoint()
   review.set_breakpoint()
 end
@@ -319,6 +323,14 @@ M.commands = {
     desc = "Revert current file changes since the last goose prompt",
     fn = function()
       M.diff_revert_this()
+    end
+  },
+
+  diff_revert_line = {
+    name = "GooseRevertLine",
+    desc = "Revert current line changes since the last goose prompt",
+    fn = function()
+      M.diff_revert_line()
     end
   },
 

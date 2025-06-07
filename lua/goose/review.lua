@@ -332,6 +332,77 @@ M.revert_current = require_git_project(function()
   end
 end)
 
+M.revert_line = require_git_project(function()
+  local files = get_changed_files()
+  local current_file = vim.fn.expand('%:p')
+  local rel_path = vim.fn.fnamemodify(current_file, ':.')
+  
+  local changed_file = nil
+  for _, file_data in ipairs(files) do
+    if file_data[1] == rel_path then
+      changed_file = file_data
+      break
+    end
+  end
+
+  if not changed_file then
+    vim.notify("No changes to revert.")
+    return
+  end
+
+  local current_line_num = vim.fn.line('.')
+  local original_content = nil
+  
+  if changed_file[2] then
+    -- Read from snapshot file
+    local snapshot_path = Path:new(changed_file[2])
+    if snapshot_path:exists() then
+      original_content = snapshot_path:read()
+    end
+  elseif git.is_tracked(changed_file[1]) then
+    -- Read from git HEAD
+    local temp_file = vim.fn.tempname()
+    if git.get_head_content(changed_file[1], temp_file) then
+      original_content = Path:new(temp_file):read()
+      vim.fn.delete(temp_file)
+    end
+  end
+  
+  if not original_content then
+    vim.notify("Cannot get original content for line revert.")
+    return
+  end
+  
+  local original_lines = vim.split(original_content, '\n')
+  if current_line_num > #original_lines then
+    vim.notify("Line " .. current_line_num .. " doesn't exist in original file.")
+    return
+  end
+  
+  local original_line = original_lines[current_line_num]
+  local current_lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+  
+  if current_line_num > #current_lines then
+    vim.notify("Current line number is out of range.")
+    return
+  end
+  
+  local current_line = current_lines[current_line_num]
+  
+  if current_line == original_line then
+    vim.notify("Line " .. current_line_num .. " is already at original state.")
+    return
+  end
+  
+  if vim.fn.input("Revert line " .. current_line_num .. "? (y/n): "):lower() ~= "y" then
+    return
+  end
+  
+  -- Replace the current line with the original line
+  vim.api.nvim_buf_set_lines(0, current_line_num - 1, current_line_num, false, {original_line})
+  vim.notify("Reverted line " .. current_line_num)
+end)
+
 M.reset_git_status = function()
   M.__is_git_project = nil
 end

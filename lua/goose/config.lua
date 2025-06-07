@@ -24,7 +24,8 @@ M.defaults = {
       diff_prev = '<leader>g[',
       diff_close = '<leader>gc',
       diff_revert_all = '<leader>gra',
-      diff_revert_this = '<leader>grt'
+      diff_revert_this = '<leader>grt',
+      diff_revert_line = '<leader>grl'
     },
     window = {
       submit = '<cr>',
